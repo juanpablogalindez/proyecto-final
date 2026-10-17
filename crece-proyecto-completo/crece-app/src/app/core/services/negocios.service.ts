@@ -1,0 +1,54 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { Categoria, Negocio } from '../models';
+
+export interface FiltrosBusqueda {
+  q?: string;
+  categoria_id?: number;
+  lat?: number;
+  lng?: number;
+  radio?: number;
+  limite?: number;
+  pagina?: number;
+}
+
+@Injectable({ providedIn: 'root' })
+export class NegociosService {
+  private http = inject(HttpClient);
+  private url = `${environment.apiUrl}/negocios`;
+
+  buscar(filtros: FiltrosBusqueda = {}) {
+    let params = new HttpParams();
+    Object.entries(filtros).forEach(([clave, valor]) => {
+      if (valor !== undefined && valor !== null && valor !== '') {
+        params = params.set(clave, String(valor));
+      }
+    });
+    return this.http.get<Negocio[]>(this.url, { params });
+  }
+
+  obtener(id: number) {
+    return this.http.get<Negocio>(`${this.url}/${id}`);
+  }
+
+  misNegocios() {
+    return this.http.get<Negocio[]>(`${this.url}/mis-negocios`);
+  }
+
+  crear(datos: Partial<Negocio>) {
+    return this.http.post<{ id: number; mensaje: string }>(this.url, datos);
+  }
+
+  actualizar(id: number, datos: Partial<Negocio>) {
+    return this.http.put<{ mensaje: string }>(`${this.url}/${id}`, datos);
+  }
+
+  eliminar(id: number) {
+    return this.http.delete<{ mensaje: string }>(`${this.url}/${id}`);
+  }
+
+  categorias() {
+    return this.http.get<Categoria[]>(`${environment.apiUrl}/categorias`);
+  }
+}
