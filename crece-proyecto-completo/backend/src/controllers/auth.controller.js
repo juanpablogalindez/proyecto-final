@@ -13,6 +13,7 @@ function generarToken(usuario) {
 export async function registrar(req, res, next) {
   try {
     const { nombre_completo, email, password, telefono, rol = 'cliente' } = req.body;
+    const rolNuevo = rol === 'negocio' ? 'negocio' : 'cliente';
 
     const [existe] = await pool.query('SELECT id FROM usuarios WHERE email = ?', [email]);
     if (existe.length) {
@@ -23,10 +24,10 @@ export async function registrar(req, res, next) {
     const [resultado] = await pool.query(
       `INSERT INTO usuarios (nombre_completo, email, password_hash, telefono, rol)
        VALUES (?, ?, ?, ?, ?)`,
-      [nombre_completo, email, password_hash, telefono || null, rol]
+      [nombre_completo, email, password_hash, telefono || null, rolNuevo]
     );
 
-    const usuario = { id: resultado.insertId, nombre_completo, email, telefono, rol };
+    const usuario = { id: resultado.insertId, nombre_completo, email, telefono, rol: rolNuevo };
     res.status(201).json({ usuario, token: generarToken(usuario) });
   } catch (error) {
     next(error);

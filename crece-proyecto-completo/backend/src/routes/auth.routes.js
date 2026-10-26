@@ -12,7 +12,7 @@ router.post(
     body('nombre_completo').trim().notEmpty().withMessage('El nombre es obligatorio'),
     body('email').isEmail().withMessage('Correo inválido'),
     body('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
-    body('rol').optional().isIn(['cliente', 'negocio', 'admin']),
+    body('rol').optional().isIn(['cliente', 'negocio']),
     validarCampos
   ],
   registrar

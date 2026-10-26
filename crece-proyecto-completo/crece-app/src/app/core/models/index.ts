@@ -37,6 +37,7 @@ export interface Negocio {
   horario_atencion?: string | null;
   logo_url?: string | null;
   formalizado: boolean;
+  verificado?: boolean;
   estado?: 'pendiente' | 'activo' | 'inactivo';
   calificacion_promedio?: number;
   total_resenas?: number;

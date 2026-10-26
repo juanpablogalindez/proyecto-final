@@ -29,7 +29,7 @@ export async function listar(req, res, next) {
 
     let sql = `
       SELECT n.id, n.nombre_negocio, n.descripcion, n.direccion, n.latitud, n.longitud,
-             n.telefono_negocio, n.logo_url, n.formalizado, n.categoria_id,
+             n.telefono_negocio, n.logo_url, n.formalizado, n.verificado, n.categoria_id,
              c.nombre AS categoria_nombre,
              COALESCE(v.calificacion_promedio, 0) AS calificacion_promedio,
              COALESCE(v.total_resenas, 0)         AS total_resenas,
@@ -113,6 +113,66 @@ export async function miNegocio(req, res, next) {
     })));
   } catch (error) {
     next(error);
+  }
+}
+
+export async function listarPendientesVerificacion(req, res, next) {
+  try {
+    const [filas] = await pool.query(
+      `SELECT n.id, n.nombre_negocio, n.descripcion, n.direccion, n.telefono_negocio,
+              n.email_negocio, n.logo_url, n.fecha_creacion, u.nombre_completo AS propietario,
+              u.email AS email_propietario
+       FROM negocios n
+       JOIN usuarios u ON u.id = n.usuario_id
+       WHERE n.verificado = FALSE
+       ORDER BY n.fecha_creacion ASC`
+    );
+    res.json(filas.map((fila) => ({
+      ...fila,
+      logo_url: normalizarImagen(fila.logo_url, req)
+    })));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function verificar(req, res, next) {
+  let conexion;
+  try {
+    conexion = await pool.getConnection();
+    await conexion.beginTransaction();
+
+    const [filas] = await conexion.query(
+      `SELECT n.usuario_id, n.nombre_negocio, n.verificado
+       FROM negocios n
+       WHERE n.id = ?
+       FOR UPDATE`,
+      [req.params.id]
+    );
+    if (!filas.length) {
+      await conexion.rollback();
+      return res.status(404).json({ mensaje: 'Negocio no encontrado' });
+    }
+    if (filas[0].verificado) {
+      await conexion.rollback();
+      return res.status(409).json({ mensaje: 'El negocio ya está verificado' });
+    }
+
+    await conexion.query('UPDATE negocios SET verificado = TRUE WHERE id = ?', [req.params.id]);
+    await conexion.query(
+      `INSERT INTO notificaciones (usuario_id, tipo, titulo, mensaje, ruta)
+       VALUES (?, 'negocio-verificado', '¡Negocio verificado!',
+               CONCAT('Tu negocio ', ?, ' fue verificado y ya cuenta con el sello de confianza.'),
+               '/tabs/mi-negocio')`,
+      [filas[0].usuario_id, filas[0].nombre_negocio]
+    );
+    await conexion.commit();
+    res.json({ mensaje: 'Negocio verificado y propietario notificado' });
+  } catch (error) {
+    if (conexion) await conexion.rollback();
+    next(error);
+  } finally {
+    conexion?.release();
   }
 }
 

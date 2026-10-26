@@ -24,6 +24,16 @@
           {{ n.categoria_nombre }}
         </ion-card-subtitle>
         <ion-card-title>{{ n.nombre_negocio }}</ion-card-title>
+        <div class="business-verification-seal" *ngIf="n.verificado">
+          <span class="business-verification-seal__icon">
+            <ion-icon name="shield-checkmark"></ion-icon>
+          </span>
+          <span class="business-verification-seal__copy">
+            <strong>Negocio verificado</strong>
+            <small>Revisado por el equipo Crece+</small>
+          </span>
+          <ion-icon class="business-verification-seal__check" name="checkmark-circle"></ion-icon>
+        </div>
       </ion-card-header>
       <ion-card-content>
         <p>{{ n.descripcion }}</p>

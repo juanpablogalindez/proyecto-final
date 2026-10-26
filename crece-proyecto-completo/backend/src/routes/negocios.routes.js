@@ -8,6 +8,8 @@ const router = Router();
 
 router.get('/', ctrl.listar);
 router.get('/mis-negocios', verificarToken, ctrl.miNegocio);
+router.get('/admin/pendientes-verificacion', verificarToken, permitirRoles('admin'), ctrl.listarPendientesVerificacion);
+router.patch('/:id/verificar', verificarToken, permitirRoles('admin'), ctrl.verificar);
 router.get('/:id', ctrl.obtener);
 
 router.post(

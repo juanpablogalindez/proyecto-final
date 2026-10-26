@@ -812,6 +812,45 @@ ion-note {
   box-shadow: 0 10px 24px rgba(15, 110, 86, 0.16);
 }
 
+.owner-business-selector {
+  margin: 0 0 14px;
+  border: 1px solid #e2ebe5;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(25, 55, 40, 0.045);
+}
+
+.owner-business-selector ion-card-header {
+  padding-bottom: 8px;
+}
+
+.owner-business-selector ion-card-title {
+  color: #19352e;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.owner-business-selector ion-card-subtitle {
+  margin-top: 4px;
+  color: #737d7a;
+  font-size: 0.75rem;
+}
+
+.owner-business-selector ion-card-content {
+  padding-top: 4px;
+}
+
+.owner-business-selector__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.owner-business-selector__list ion-button {
+  margin: 0;
+  --border-radius: 999px;
+  font-size: 0.72rem;
+}
+
 .owner-avatar {
   display: grid;
   width: 58px;
@@ -1659,10 +1698,79 @@ ion-tab-button.tab-selected::before {
 }
 
 .business-card-verified {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 999px;
+  color: #07533f;
+  background: rgba(239, 255, 248, 0.96);
+  box-shadow: 0 2px 8px rgba(9, 56, 42, 0.2);
+  font-size: 0.59rem;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: 0.025em;
+
+  ion-icon {
+    font-size: 13px;
+  }
+}
+
+.business-verification-seal {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid #b9e4d4;
+  border-radius: 15px;
+  background: linear-gradient(110deg, #effbf5, #e1f5ee);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.business-verification-seal__icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border: 1px solid #a6d9c5;
+  border-radius: 12px;
+  color: #087354;
+  background: #ffffff;
+
+  ion-icon {
+    font-size: 23px;
+  }
+}
+
+.business-verification-seal__copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+
+  strong {
+    color: #07533f;
+    font-size: 0.77rem;
+    font-weight: 850;
+  }
+
+  small {
+    color: #527267;
+    font-size: 0.65rem;
+  }
+}
+
+.business-verification-seal__check {
   flex: 0 0 auto;
-  color: #518d58;
-  font-size: 0.7rem;
-  font-weight: 800;
+  color: #0f8a63;
+  font-size: 23px;
 }
 
 .business-card-category {

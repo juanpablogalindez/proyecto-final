@@ -18,6 +18,7 @@ export class AuthService {
   usuario = this._usuario.asReadonly();
   estaAutenticado = computed(() => this._usuario() !== null);
   esNegocio = computed(() => this._usuario()?.rol === 'negocio');
+  esAdmin = computed(() => this._usuario()?.rol === 'admin');
 
   private leerUsuarioGuardado(): Usuario | null {
     const guardado = localStorage.getItem(CLAVE_USUARIO);

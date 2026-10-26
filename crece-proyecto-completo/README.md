@@ -25,7 +25,7 @@ Extra: favoritos (negocios guardados).
 mysql -u root -p < crece_db.sql
 ```
 
-El script crea `crece_db` con 13 tablas, la vista `vw_negocios_calificacion`, la función
+El script crea `crece_db` con 14 tablas, la vista `vw_negocios_calificacion`, la función
 `distancia_km` (Haversine) y datos semilla de categorías y capacitaciones.
 
 > Si MySQL rechaza la creación de la función, ejecute una vez:
@@ -37,6 +37,7 @@ Si ya tiene la base `crece_db` y no desea recrearla, aplique las migraciones en 
 mysql -u root -p crece_db < backend/migrations/001_pedidos.sql
 mysql -u root -p crece_db < backend/migrations/002_pedido_metodo_pago.sql
 mysql -u root -p crece_db < backend/migrations/003_notificaciones_confirmacion_pedido.sql
+mysql -u root -p crece_db < backend/migrations/004_verificacion_negocios.sql
 ```
 
 ## 2. Backend (Node.js + Express + MySQL)
@@ -50,6 +51,14 @@ npm run dev
 
 Queda en `http://localhost:3000/api`. Pruebe con `GET http://localhost:3000/api/health`.
 
+### Crear el administrador inicial
+
+Desde la carpeta `backend`, ejecuta `npm run crear-admin` en una terminal interactiva.
+El comando solicita nombre y correo, y pide la contraseña sin mostrarla en pantalla.
+Luego inicia sesión con ese correo desde la app; verás la pestaña **Administrar** para
+revisar y verificar negocios. Al verificar uno, su dueño recibe una notificación en la
+campana de la app.
+
 ### Endpoints principales
 
 | Método | Ruta | Descripción |
@@ -58,6 +67,8 @@ Queda en `http://localhost:3000/api`. Pruebe con `GET http://localhost:3000/api/
 | POST | `/api/auth/login` | Iniciar sesión, devuelve JWT |
 | GET | `/api/negocios?q=&categoria_id=&lat=&lng=&radio=` | Buscador (texto, categoría y cercanía) |
 | POST | `/api/negocios` | Registrar negocio (rol negocio) |
+| GET | `/api/negocios/admin/pendientes-verificacion` | Listar negocios pendientes (solo admin) |
+| PATCH | `/api/negocios/:id/verificar` | Verificar negocio y notificar a su dueño (solo admin) |
 | GET | `/api/productos?negocio_id=1` | Catálogo de un negocio |
 | POST | `/api/facturas` | Emitir factura con líneas (transaccional) |
 | POST | `/api/pedidos` | Crear pedido de cliente desde el carrito (sin cobro en línea) |

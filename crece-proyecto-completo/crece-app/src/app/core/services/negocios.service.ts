@@ -36,6 +36,18 @@ export class NegociosService {
     return this.http.get<Negocio[]>(`${this.url}/mis-negocios`);
   }
 
+  pendientesVerificacion() {
+    return this.http.get<(Negocio & {
+      propietario: string;
+      email_propietario: string;
+      fecha_creacion: string;
+    })[]>(`${this.url}/admin/pendientes-verificacion`);
+  }
+
+  verificar(id: number) {
+    return this.http.patch<{ mensaje: string }>(`${this.url}/${id}/verificar`, {});
+  }
+
   crear(datos: Partial<Negocio>) {
     return this.http.post<{ id: number; mensaje: string }>(this.url, datos);
   }

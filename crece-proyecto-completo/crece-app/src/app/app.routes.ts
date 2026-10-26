@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, negocioGuard } from './core/guards/auth.guard';
+import { adminGuard, authGuard, negocioGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'tabs/inicio', pathMatch: 'full' },
@@ -43,6 +43,12 @@ export const routes: Routes = [
         canActivate: [authGuard, negocioGuard],
         loadComponent: () =>
           import('./pages/mi-negocio/mi-negocio.page').then((m) => m.MiNegocioPage)
+      },
+      {
+        path: 'admin',
+        canActivate: [authGuard, adminGuard],
+        loadComponent: () =>
+          import('./pages/admin/admin.page').then((m) => m.AdminPage)
       },
       {
         path: 'perfil',

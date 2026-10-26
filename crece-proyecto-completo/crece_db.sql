@@ -59,6 +59,7 @@ CREATE TABLE negocios (
     horario_atencion      VARCHAR(255)  NULL,
     logo_url             VARCHAR(255)  NULL,
     formalizado          BOOLEAN       NOT NULL DEFAULT FALSE COMMENT 'Si ya cuenta con RUT/registro formal',
+    verificado           BOOLEAN       NOT NULL DEFAULT FALSE COMMENT 'Verificado por un administrador',
     estado               ENUM('pendiente', 'activo', 'inactivo') NOT NULL DEFAULT 'pendiente',
     fecha_creacion        DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion   DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -168,6 +169,21 @@ CREATE TABLE notificaciones_pedidos (
 
 CREATE INDEX idx_notificaciones_pedido_usuario_fecha
     ON notificaciones_pedidos (usuario_id, fecha_creacion);
+
+CREATE TABLE notificaciones (
+    id              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    usuario_id      INT UNSIGNED NOT NULL,
+    tipo            VARCHAR(50) NOT NULL,
+    titulo          VARCHAR(150) NOT NULL,
+    mensaje         VARCHAR(500) NOT NULL,
+    ruta            VARCHAR(255) NOT NULL,
+    fecha_creacion  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_notificaciones_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB;
+
+CREATE INDEX idx_notificaciones_usuario_fecha
+    ON notificaciones (usuario_id, fecha_creacion);
 
 -- =====================================================================
 -- 7. FACTURAS

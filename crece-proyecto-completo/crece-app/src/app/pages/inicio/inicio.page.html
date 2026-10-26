@@ -103,13 +103,15 @@
               <ion-icon name="storefront-outline"></ion-icon>
             </span>
           </ng-template>
+          <span *ngIf="negocio.verificado" class="business-card-verified">
+            <ion-icon name="shield-checkmark"></ion-icon>
+            Verificado
+          </span>
           <ion-badge color="success" *ngIf="negocio.estado === 'activo'">Abierto</ion-badge>
         </div>
         <div class="business-card-details">
           <div class="business-card-title">
             <h2>{{ negocio.nombre_negocio }}</h2>
-            <span *ngIf="negocio.formalizado" class="business-card-verified"
-                  [attr.aria-label]="'Negocio formalizado'">✓</span>
           </div>
           <p class="business-card-category">{{ negocio.categoria_nombre || 'Sin categoría' }}</p>
           <p class="business-card-rating">
