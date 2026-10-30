@@ -1,7 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Categoria, Negocio } from '../models';
+import {
+  Categoria, DecisionVerificacion, DetalleVerificacion, Negocio, ResultadoVerificacion
+} from '../models';
 
 export interface FiltrosBusqueda {
   q?: string;
@@ -46,6 +48,28 @@ export class NegociosService {
 
   verificar(id: number) {
     return this.http.patch<{ mensaje: string }>(`${this.url}/${id}/verificar`, {});
+  }
+
+  detalleVerificacion(id: number) {
+    return this.http.get<DetalleVerificacion>(`${this.url}/${id}/verificacion`);
+  }
+
+  reabrirVerificacion(id: number) {
+    return this.http.patch<{ mensaje: string; estado: string }>(`${this.url}/${id}/verificacion/reabrir`, {});
+  }
+
+  revisarVerificacion(id: number, decision: DecisionVerificacion, requisitos: {
+    requisito_id: number;
+    resultado: ResultadoVerificacion;
+    observacion?: string;
+  }[], observaciones: string) {
+    return this.http.post<{ mensaje: string; estado: string }>(`${this.url}/${id}/verificacion/revisar`, {
+      decision, requisitos, observaciones
+    });
+  }
+
+  reenviarVerificacion(id: number) {
+    return this.http.post<{ mensaje: string; estado: string }>(`${this.url}/${id}/verificacion/reenviar`, {});
   }
 
   crear(datos: Partial<Negocio>) {

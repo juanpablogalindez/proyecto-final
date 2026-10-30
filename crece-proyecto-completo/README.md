@@ -3,6 +3,11 @@
 Proyecto del curso **Ingeniería de Software II** — Fundación Escuela Tecnológica de Neiva "Jesús Oviedo Pérez".
 Plataforma orientada al ODS 8 que da visibilidad a emprendedores informales y negocios familiares de Neiva y el Huila.
 
+## Documentación
+
+- [Informe de errores, correcciones y evidencias](./INFORME-ERRORES-CORRECCIONES.md)
+- [Manual de usuario](./MANUAL-USUARIO.md)
+
 ## Módulos implementados (Acta No. 002)
 
 | # | Módulo | Backend | Frontend |
@@ -38,6 +43,7 @@ mysql -u root -p crece_db < backend/migrations/001_pedidos.sql
 mysql -u root -p crece_db < backend/migrations/002_pedido_metodo_pago.sql
 mysql -u root -p crece_db < backend/migrations/003_notificaciones_confirmacion_pedido.sql
 mysql -u root -p crece_db < backend/migrations/004_verificacion_negocios.sql
+mysql -u root -p crece_db < backend/migrations/005_verificacion_completa.sql
 ```
 
 ## 2. Backend (Node.js + Express + MySQL)

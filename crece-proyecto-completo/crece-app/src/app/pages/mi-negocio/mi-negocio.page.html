@@ -36,8 +36,20 @@
       <h1>{{ n.nombre_negocio }}</h1>
       <p>{{ n.categoria_nombre || 'Emprendimiento local' }}</p>
     </div>
-    <ion-badge color="success">{{ n.estado === 'activo' ? 'Activo' : 'Pendiente' }}</ion-badge>
+    <ion-badge [color]="colorEstadoVerificacion(n.verificacion_estado)">
+      {{ etiquetaEstadoVerificacion(n.verificacion_estado) }}
+    </ion-badge>
   </section>
+
+  <ion-card *ngIf="negocio()?.verificacion_estado === 'requiere_correcciones'">
+    <ion-card-header><ion-card-title>Correcciones solicitadas</ion-card-title></ion-card-header>
+    <ion-card-content>
+      <p>{{ negocio()?.verificacion_observaciones || 'Revisa la información de tu negocio y actualízala.' }}</p>
+      <ion-button expand="block" color="primary" (click)="reenviarVerificacion()">
+        Enviar nuevamente a revisión
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 
   <section class="owner-stats" *ngIf="negocio() as n">
     <div><strong>{{ n.total_resenas || resenas().length }}</strong><span>Reseñas</span></div>

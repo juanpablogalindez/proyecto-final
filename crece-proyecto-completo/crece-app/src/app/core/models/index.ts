@@ -39,9 +39,44 @@ export interface Negocio {
   formalizado: boolean;
   verificado?: boolean;
   estado?: 'pendiente' | 'activo' | 'inactivo';
+  verificacion_estado?: 'pendiente' | 'en_revision' | 'requiere_correcciones' | 'verificado' | 'rechazado';
+  verificacion_observaciones?: string | null;
+  verificacion_fecha?: string | null;
   calificacion_promedio?: number;
   total_resenas?: number;
   distancia_km?: number | null;
+}
+
+export type ResultadoVerificacion = 'cumple' | 'no_cumple' | 'no_verificable';
+export type DecisionVerificacion = 'verificado' | 'requiere_correcciones' | 'rechazado';
+
+export interface RequisitoVerificacion {
+  id: number;
+  clave: string;
+  nombre: string;
+  obligatorio: boolean;
+  orden: number;
+  resultado?: ResultadoVerificacion;
+  observacion?: string;
+}
+
+export interface RevisionVerificacion {
+  id: number;
+  decision: DecisionVerificacion;
+  observaciones?: string | null;
+  fecha_creacion: string;
+  administrador: string;
+  items?: RequisitoVerificacion[];
+}
+
+export interface DetalleVerificacion {
+  negocio: Negocio & {
+    propietario: string;
+    email_propietario: string;
+    telefono_propietario?: string | null;
+  };
+  requisitos: RequisitoVerificacion[];
+  historial: RevisionVerificacion[];
 }
 
 export interface ProductoServicio {

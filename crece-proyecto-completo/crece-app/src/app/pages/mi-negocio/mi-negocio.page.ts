@@ -374,6 +374,53 @@ export class MiNegocioPage implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
+  etiquetaEstadoVerificacion(estado: Negocio['verificacion_estado']): string {
+    return ({
+      pendiente: 'Pendiente',
+      en_revision: 'En revisión',
+      requiere_correcciones: 'Requiere correcciones',
+      verificado: 'Verificado',
+      rechazado: 'Rechazado'
+    } as Record<string, string>)[estado || ''] || 'Pendiente';
+  }
+
+  colorEstadoVerificacion(estado: Negocio['verificacion_estado']): string {
+    return ({
+      pendiente: 'medium',
+      en_revision: 'warning',
+      requiere_correcciones: 'warning',
+      verificado: 'success',
+      rechazado: 'danger'
+    } as Record<string, string>)[estado || ''] || 'medium';
+  }
+
+  reenviarVerificacion() {
+    const negocioActual = this.negocio();
+    if (!negocioActual) return;
+    this.negociosService.reenviarVerificacion(negocioActual.id).subscribe({
+      next: async (respuesta) => {
+        const aviso = await this.toast.create({
+          message: respuesta.mensaje,
+          duration: 2200,
+          color: 'success'
+        });
+        await aviso.present();
+        this.negociosService.misNegocios().subscribe((lista) => {
+          this.negociosDisponibles.set(lista);
+          this.seleccionarNegocio(negocioActual.id);
+        });
+      },
+      error: async (error) => {
+        const aviso = await this.toast.create({
+          message: error?.error?.mensaje || 'No fue posible reenviar el negocio.',
+          duration: 2500,
+          color: 'danger'
+        });
+        await aviso.present();
+      }
+    });
+  }
+
   irACatalogo() {
     this.router.navigate(['/catalogo', this.negocio()!.id]);
   }

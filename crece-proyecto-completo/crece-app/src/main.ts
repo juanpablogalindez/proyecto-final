@@ -12,7 +12,8 @@ import {
   medkitOutline, chatbubbleEllipsesOutline, imageOutline, notificationsOutline,
   shirtOutline, briefcaseOutline, appsOutline, createOutline, settingsOutline,
   helpCircleOutline, logOutOutline, heartOutline, heart, cartOutline, addOutline,
-  closeOutline, starOutline
+  closeOutline, starOutline, shieldCheckmark, shieldCheckmarkOutline,
+  checkmarkCircle, checkmarkCircleOutline, checkmarkOutline, cameraOutline, cardOutline
 } from 'ionicons/icons';
 
 addIcons({
@@ -57,7 +58,14 @@ addIcons({
   'cart-outline': cartOutline,
   'add-outline': addOutline,
   'close-outline': closeOutline,
-  'star-outline': starOutline
+  'star-outline': starOutline,
+  'shield-checkmark': shieldCheckmark,
+  'shield-checkmark-outline': shieldCheckmarkOutline,
+  'checkmark-circle': checkmarkCircle,
+  'checkmark-circle-outline': checkmarkCircleOutline,
+  'checkmark-outline': checkmarkOutline,
+  'camera-outline': cameraOutline,
+  'card-outline': cardOutline
 });
 
 bootstrapApplication(AppComponent, appConfig)
