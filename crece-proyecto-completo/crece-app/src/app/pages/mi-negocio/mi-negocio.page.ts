@@ -76,6 +76,8 @@ export class MiNegocioPage implements OnInit, AfterViewInit, OnDestroy {
       this.negociosDisponibles.set(lista);
       if (lista.length) {
         this.seleccionarNegocio(lista[0].id);
+      } else {
+        this.agregarNegocio();
       }
     }, (error) => {
       this.cargandoNegocio.set(false);
@@ -111,6 +113,27 @@ export class MiNegocioPage implements OnInit, AfterViewInit, OnDestroy {
     this.pedidos.set([]);
     this.cargarResenas(seleccionado.id);
     this.cargarPedidos(seleccionado.id);
+  }
+
+  agregarNegocio() {
+    this.negocio.set(null);
+    this.resenas.set([]);
+    this.pedidos.set([]);
+    this.errorCargaPedidos.set('');
+    this.formulario.reset({
+      nombre_negocio: '',
+      categoria_id: null,
+      descripcion: '',
+      direccion: '',
+      telefono_negocio: '',
+      email_negocio: '',
+      horario_atencion: '',
+      logo_url: '',
+      latitud: null,
+      longitud: null,
+      formalizado: false
+    });
+    this.actualizarMarcadorUbicacion(true);
   }
 
   private actualizarResenas() {
@@ -317,7 +340,7 @@ export class MiNegocioPage implements OnInit, AfterViewInit, OnDestroy {
       : this.negociosService.crear(datos as never);
 
     peticion.subscribe({
-      next: async () => {
+      next: async (respuesta) => {
         this.guardando.set(false);
         const aviso = await this.toast.create({
           message: existente ? 'Perfil actualizado' : 'Negocio registrado',
@@ -325,14 +348,71 @@ export class MiNegocioPage implements OnInit, AfterViewInit, OnDestroy {
           color: 'success'
         });
         await aviso.present();
-        this.negociosService.misNegocios().subscribe((lista) => {
-          if (lista.length) this.negocio.set(lista[0]);
+        this.negociosService.misNegocios().subscribe({
+          next: (lista) => {
+            this.negociosDisponibles.set(lista);
+            if (existente) {
+              this.seleccionarNegocio(existente.id);
+            } else if ('id' in respuesta && typeof respuesta.id === 'number') {
+              this.seleccionarNegocio(respuesta.id);
+            } else {
+              this.errorCargaNegocio.set('El negocio se creó, pero no se recibió su identificador.');
+            }
+          },
+          error: (error) => this.mostrarErrorCarga(error, 'El negocio se guardó, pero no fue posible actualizar la lista')
         });
       },
       error: async (error) => {
         this.guardando.set(false);
         const aviso = await this.toast.create({
           message: error?.error?.mensaje || 'No fue posible guardar',
+          duration: 2500,
+          color: 'danger'
+        });
+        await aviso.present();
+      }
+    });
+  }
+
+  etiquetaEstadoVerificacion(estado: Negocio['verificacion_estado']): string {
+    return ({
+      pendiente: 'Pendiente',
+      en_revision: 'En revisión',
+      requiere_correcciones: 'Requiere correcciones',
+      verificado: 'Verificado',
+      rechazado: 'Rechazado'
+    } as Record<string, string>)[estado || ''] || 'Pendiente';
+  }
+
+  colorEstadoVerificacion(estado: Negocio['verificacion_estado']): string {
+    return ({
+      pendiente: 'medium',
+      en_revision: 'warning',
+      requiere_correcciones: 'warning',
+      verificado: 'success',
+      rechazado: 'danger'
+    } as Record<string, string>)[estado || ''] || 'medium';
+  }
+
+  reenviarVerificacion() {
+    const negocioActual = this.negocio();
+    if (!negocioActual) return;
+    this.negociosService.reenviarVerificacion(negocioActual.id).subscribe({
+      next: async (respuesta) => {
+        const aviso = await this.toast.create({
+          message: respuesta.mensaje,
+          duration: 2200,
+          color: 'success'
+        });
+        await aviso.present();
+        this.negociosService.misNegocios().subscribe((lista) => {
+          this.negociosDisponibles.set(lista);
+          this.seleccionarNegocio(negocioActual.id);
+        });
+      },
+      error: async (error) => {
+        const aviso = await this.toast.create({
+          message: error?.error?.mensaje || 'No fue posible reenviar el negocio.',
           duration: 2500,
           color: 'danger'
         });

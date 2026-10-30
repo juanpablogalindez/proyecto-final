@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 export interface Notificacion {
   id: string;
   tipo: 'negocio' | 'reseña' | 'respuesta' | 'factura' | 'pago-factura' | 'pedido'
-    | 'pedido-confirmado' | 'pedido-entregado';
+    | 'pedido-confirmado' | 'pedido-entregado' | 'negocio-verificado';
   titulo: string;
   mensaje: string;
   fecha: string;

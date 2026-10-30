@@ -79,6 +79,11 @@ import { Notificacion, NotificacionesService } from '../../core/services/notific
           <ion-label>Mi negocio</ion-label>
         </ion-tab-button>
 
+        <ion-tab-button tab="admin" *ngIf="auth.esAdmin()">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          <ion-label>Administrar</ion-label>
+        </ion-tab-button>
+
         <ion-tab-button tab="perfil">
           <ion-icon name="person-outline"></ion-icon>
           <ion-label>Perfil</ion-label>
@@ -129,7 +134,8 @@ export class TabsPage implements OnInit, OnDestroy {
           ? lista.filter((notificacion) =>
               (notificacion.tipo === 'pedido-confirmado' ||
                 notificacion.tipo === 'pedido-entregado' ||
-                notificacion.tipo === 'factura') &&
+                notificacion.tipo === 'factura' ||
+                notificacion.tipo === 'negocio-verificado') &&
               !this.idsNotificacionesConocidas.has(notificacion.id)
             )
           : lista.filter((notificacion) =>

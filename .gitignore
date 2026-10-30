@@ -1,0 +1,5 @@
+# Excluir imágenes cargadas por usuarios
+/crece-proyecto-completo/backend/uploads/*
+
+# Permitir conservar la carpeta vacía
+!/crece-proyecto-completo/backend/uploads/.gitkeep

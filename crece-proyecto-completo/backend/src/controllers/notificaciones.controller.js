@@ -60,7 +60,17 @@ export async function listar(req, res, next) {
         [req.usuario.rol, req.usuario.id]
       );
 
-      filas = [...filas, ...pagos, ...pedidos]
+      const [notificacionesPersistentes] = await pool.query(
+        `SELECT CONCAT('notificacion-', id) AS id, tipo, titulo, mensaje,
+                fecha_creacion AS fecha, ruta
+         FROM notificaciones
+         WHERE usuario_id = ?
+         ORDER BY fecha_creacion DESC
+         LIMIT 20`,
+        [req.usuario.id]
+      );
+
+      filas = [...filas, ...pagos, ...pedidos, ...notificacionesPersistentes]
         .sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime())
         .slice(0, 20);
     } else {

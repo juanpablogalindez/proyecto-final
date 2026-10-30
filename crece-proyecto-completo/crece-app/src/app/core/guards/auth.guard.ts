@@ -21,3 +21,12 @@ export const negocioGuard: CanActivateFn = () => {
   router.navigateByUrl('/tabs/inicio');
   return false;
 };
+
+export const adminGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+
+  if (auth.usuario()?.rol === 'admin') return true;
+  router.navigateByUrl('/tabs/inicio');
+  return false;
+};

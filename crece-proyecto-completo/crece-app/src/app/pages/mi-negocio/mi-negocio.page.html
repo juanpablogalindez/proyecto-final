@@ -5,6 +5,27 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <ion-card class="owner-business-selector" *ngIf="negociosDisponibles().length">
+    <ion-card-header>
+      <ion-card-title>Tus negocios</ion-card-title>
+      <ion-card-subtitle>Puedes administrar varios negocios desde esta cuenta.</ion-card-subtitle>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="owner-business-selector__list">
+        <ion-button *ngFor="let item of negociosDisponibles()"
+                    [fill]="negocio()?.id === item.id ? 'solid' : 'outline'"
+                    size="small"
+                    (click)="seleccionarNegocio(item.id)">
+          {{ item.nombre_negocio }}
+        </ion-button>
+      </div>
+      <ion-button expand="block" fill="clear" (click)="agregarNegocio()">
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+        Agregar otro negocio
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
   <section class="owner-hero" *ngIf="negocio() as n">
     <div class="owner-avatar">
       <img *ngIf="n.logo_url" [src]="imagenUrl(n.logo_url)" [alt]="n.nombre_negocio" />
@@ -15,8 +36,20 @@
       <h1>{{ n.nombre_negocio }}</h1>
       <p>{{ n.categoria_nombre || 'Emprendimiento local' }}</p>
     </div>
-    <ion-badge color="success">{{ n.estado === 'activo' ? 'Activo' : 'Pendiente' }}</ion-badge>
+    <ion-badge [color]="colorEstadoVerificacion(n.verificacion_estado)">
+      {{ etiquetaEstadoVerificacion(n.verificacion_estado) }}
+    </ion-badge>
   </section>
+
+  <ion-card *ngIf="negocio()?.verificacion_estado === 'requiere_correcciones'">
+    <ion-card-header><ion-card-title>Correcciones solicitadas</ion-card-title></ion-card-header>
+    <ion-card-content>
+      <p>{{ negocio()?.verificacion_observaciones || 'Revisa la información de tu negocio y actualízala.' }}</p>
+      <ion-button expand="block" color="primary" (click)="reenviarVerificacion()">
+        Enviar nuevamente a revisión
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 
   <section class="owner-stats" *ngIf="negocio() as n">
     <div><strong>{{ n.total_resenas || resenas().length }}</strong><span>Reseñas</span></div>
@@ -94,7 +127,9 @@
   </ion-card>
 
   <ion-note *ngIf="!negocio()" class="ion-padding-start">
-    Complete los datos para registrar su negocio en Crece+.
+    {{ negociosDisponibles().length
+      ? 'Completa los datos para registrar otro negocio asociado a tu cuenta.'
+      : 'Completa los datos para registrar tu negocio en Crece+.' }}
   </ion-note>
 
   <form [formGroup]="formulario" (ngSubmit)="guardar()">
@@ -179,7 +214,9 @@
 
     <ion-button expand="block" type="submit" class="ion-margin-top" [disabled]="guardando()">
       <ion-spinner *ngIf="guardando()" name="crescent"></ion-spinner>
-      <span *ngIf="!guardando()">{{ negocio() ? 'Actualizar negocio' : 'Registrar negocio' }}</span>
+      <span *ngIf="!guardando()">
+        {{ negocio() ? 'Actualizar negocio' : (negociosDisponibles().length ? 'Registrar otro negocio' : 'Registrar negocio') }}
+      </span>
     </ion-button>
   </form>
 
